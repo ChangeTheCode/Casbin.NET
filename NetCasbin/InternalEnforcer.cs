@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NetCasbin
@@ -51,12 +52,13 @@ namespace NetCasbin
         /// Adds a rule to the current policy.
         /// </summary>
         /// <param name="sec"></param>
-        /// <param name="ptype"></param>
+        /// <param name="pType"></param>
         /// <param name="rule"></param>
+        /// <param name="cancellationToken">instance of the cancellation token</param>
         /// <returns></returns>
-        protected async Task<bool> AddPolicyAsync(string sec, string ptype, List<string> rule)
+        protected async Task<bool> AddPolicyAsync(string sec, string pType, List<string> rule, CancellationToken cancellationToken)
         {
-            if (model.HasPolicy(sec, ptype, rule))
+            if (model.HasPolicy(sec, pType, rule))
             {
                 return false;
             }
@@ -66,7 +68,7 @@ namespace NetCasbin
                 bool adapterAdded;
                 try
                 {
-                    await adapter.AddPolicyAsync(sec, ptype, rule);
+                    await adapter.AddPolicyAsync(sec, pType, rule, cancellationToken);
                     adapterAdded = true;
                 }
                 catch (NotImplementedException)
@@ -84,7 +86,7 @@ namespace NetCasbin
                 }
             }
 
-            var ruleAdded = model.AddPolicy(sec, ptype, rule);
+            var ruleAdded = model.AddPolicy(sec, pType, rule);
             return ruleAdded;
         }
 
@@ -92,17 +94,17 @@ namespace NetCasbin
         /// Removes a rule from the current policy.
         /// </summary>
         /// <param name="sec"></param>
-        /// <param name="ptype"></param>
+        /// <param name="pType"></param>
         /// <param name="rule"></param>
         /// <returns></returns>
-        protected bool RemovePolicy(string sec, string ptype, List<string> rule)
+        protected bool RemovePolicy(string sec, string pType, List<string> rule)
         {
             if (adapter != null && autoSave)
             {
                 bool adapterRemoved;
                 try
                 {
-                    adapter.RemovePolicy(sec, ptype, rule);
+                    adapter.RemovePolicy(sec, pType, rule);
                     adapterRemoved = true;
                 }
                 catch (NotImplementedException)
@@ -117,7 +119,7 @@ namespace NetCasbin
                 }
             }
 
-            var ruleRemoved = model.RemovePolicy(sec, ptype, rule);
+            var ruleRemoved = model.RemovePolicy(sec, pType, rule);
             return ruleRemoved;
         }
 
@@ -125,17 +127,18 @@ namespace NetCasbin
         /// Removes a rule from the current policy.
         /// </summary>
         /// <param name="sec"></param>
-        /// <param name="ptype"></param>
+        /// <param name="pType"></param>
         /// <param name="rule"></param>
+        /// <param name="cancellationToken">Instance of the cancellation token</param>
         /// <returns></returns>
-        protected async Task<bool> RemovePolicyAsync(string sec, string ptype, List<string> rule)
+        protected async Task<bool> RemovePolicyAsync(string sec, string pType, List<string> rule, CancellationToken cancellationToken)
         {
             if (adapter != null && autoSave)
             {
                 bool adapterRemoved;
                 try
                 {
-                    await adapter.RemovePolicyAsync(sec, ptype, rule);
+                    await adapter.RemovePolicyAsync(sec, pType, rule, cancellationToken);
                     adapterRemoved = true;
                 }
                 catch (NotImplementedException)
@@ -153,7 +156,7 @@ namespace NetCasbin
                 }
             }
 
-            var ruleRemoved = model.RemovePolicy(sec, ptype, rule);
+            var ruleRemoved = model.RemovePolicy(sec, pType, rule);
             return ruleRemoved;
         }
 
@@ -197,16 +200,18 @@ namespace NetCasbin
         /// <param name="sec"></param>
         /// <param name="ptype"></param>
         /// <param name="fieldIndex"></param>
+        /// <param name="cancellationToken">Instance of the cancellation Token</param>
         /// <param name="fieldValues"></param>
         /// <returns></returns>
-        protected async Task<bool> RemoveFilteredPolicyAsync(string sec, string ptype, int fieldIndex, params string[] fieldValues)
+        protected async Task<bool> RemoveFilteredPolicyAsync(string sec, string ptype, int fieldIndex, CancellationToken cancellationToken, params string[] fieldValues)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             if (adapter != null && autoSave)
             {
                 bool adapterRemoved;
                 try
                 {
-                    await adapter.RemoveFilteredPolicyAsync(sec, ptype, fieldIndex, fieldValues);
+                    await adapter.RemoveFilteredPolicyAsync(sec, ptype, fieldIndex, cancellationToken, fieldValues);
                     adapterRemoved = true;
                 }
                 catch (NotImplementedException)

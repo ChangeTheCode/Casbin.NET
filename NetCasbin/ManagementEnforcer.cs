@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NetCasbin
@@ -262,11 +263,12 @@ namespace NetCasbin
         /// already exists, the function returns false and the rule will not be added.
         /// Otherwise the function returns true by adding the new rule.
         /// </summary>
+        /// <param name="cancellationToken">Instance of the cancellation token</param>
         /// <param name="parameters">The "p" policy rule, ptype "p" is implicitly used.</param>
         /// <returns>Succeeds or not.</returns>
-        public Task<bool> AddPolicyAsync(params string[] parameters)
+        public Task<bool> AddPolicyAsync(CancellationToken cancellationToken, params string[] parameters)
         {
-            return AddPolicyAsync(parameters.ToList());
+            return AddPolicyAsync(parameters.ToList(), cancellationToken);
         }
 
         /// <summary>
@@ -286,11 +288,12 @@ namespace NetCasbin
         /// already exists, the function returns false and the rule will not be added.
         /// Otherwise the function returns true by adding the new rule.
         /// </summary>
-        /// <param name="parameters">The "p" policy rule, ptype "p" is implicitly used.</param>
+        /// <param name="parameters">The "p" policy rule, pType "p" is implicitly used.</param>
+        /// <param name="cancellationToken">Instance of the cancellation token</param>
         /// <returns>Succeeds or not.</returns>
-        public Task<bool> AddPolicyAsync(List<string> parameters)
+        public Task<bool> AddPolicyAsync(List<string> parameters, CancellationToken cancellationToken)
         {
-            return AddNamedPolicyAsync(PermConstants.DefautPolicyType, parameters);
+            return AddNamedPolicyAsync(PermConstants.DefautPolicyType, parameters, cancellationToken);
         }
 
         /// <summary>
@@ -298,12 +301,12 @@ namespace NetCasbin
         /// rule already exists, the function returns false and the rule will not be added.
         /// Otherwise the function returns true by adding the new rule.
         /// </summary>
-        /// <param name="ptype">The policy type, can be "p", "p2", "p3", ..</param>
+        /// <param name="pType">The policy type, can be "p", "p2", "p3", ..</param>
         /// <param name="parameters">The "p" policy rule.</param>
         /// <returns>Succeeds or not.</returns>
-        public bool AddNamedPolicy(string ptype, params string[] parameters)
+        public bool AddNamedPolicy(string pType, params string[] parameters)
         {
-            return AddNamedPolicy(ptype, parameters.ToList());
+            return AddNamedPolicy(pType, parameters.ToList());
         }
 
         /// <summary>
@@ -311,12 +314,13 @@ namespace NetCasbin
         /// rule already exists, the function returns false and the rule will not be added.
         /// Otherwise the function returns true by adding the new rule.
         /// </summary>
-        /// <param name="ptype">The policy type, can be "p", "p2", "p3", ..</param>
+        /// <param name="pType">The policy type, can be "p", "p2", "p3", ..</param>
+        /// <param name="cancellationToken">Instance of the cancellation token</param>
         /// <param name="parameters">The "p" policy rule.</param>
         /// <returns>Succeeds or not.</returns>
-        public Task<bool> AddNamedPolicyAsync(string ptype, params string[] parameters)
+        public Task<bool> AddNamedPolicyAsync(string pType, CancellationToken cancellationToken, params string[] parameters)
         {
-            return AddNamedPolicyAsync(ptype, parameters.ToList());
+            return AddNamedPolicyAsync(pType, parameters.ToList(), cancellationToken);
         }
 
         /// <summary>
@@ -324,12 +328,12 @@ namespace NetCasbin
         /// rule already exists, the function returns false and the rule will not be added.
         /// Otherwise the function returns true by adding the new rule.
         /// </summary>
-        /// <param name="ptype">The policy type, can be "p", "p2", "p3", ..</param>
+        /// <param name="pType">The policy type, can be "p", "p2", "p3", ..</param>
         /// <param name="parameters">The "p" policy rule.</param>
         /// <returns>Succeeds or not.</returns>
-        public bool AddNamedPolicy(string ptype, List<string> parameters)
+        public bool AddNamedPolicy(string pType, List<string> parameters)
         {
-            return AddPolicy(PermConstants.Section.PolicySection, ptype, parameters);
+            return AddPolicy(PermConstants.Section.PolicySection, pType, parameters);
         }
 
         /// <summary>
@@ -337,12 +341,13 @@ namespace NetCasbin
         /// rule already exists, the function returns false and the rule will not be added.
         /// Otherwise the function returns true by adding the new rule.
         /// </summary>
-        /// <param name="ptype">The policy type, can be "p", "p2", "p3", ..</param>
+        /// <param name="pType">The policy type, can be "p", "p2", "p3", ..</param>
         /// <param name="parameters">The "p" policy rule.</param>
+        /// <param name="cancellationToken">Instance of the cancellation token</param>
         /// <returns>Succeeds or not.</returns>
-        public Task<bool> AddNamedPolicyAsync(string ptype, List<string> parameters)
+        public Task<bool> AddNamedPolicyAsync(string pType, List<string> parameters, CancellationToken cancellationToken)
         {
-            return AddPolicyAsync(PermConstants.Section.PolicySection, ptype, parameters);
+            return AddPolicyAsync(PermConstants.Section.PolicySection, pType, parameters, cancellationToken);
         }
 
         /// <summary>
@@ -359,10 +364,11 @@ namespace NetCasbin
         /// Removes an authorization rule from the current policy.
         /// </summary>
         /// <param name="parameters">The "p" policy rule, ptype "p" is implicitly used.</param>
+        /// <param name="cancellationToken">Instance of the cancellation token</param>
         /// <returns>Succeeds or not.</returns>
-        public Task<bool> RemovePolicyAsync(params string[] parameters)
+        public Task<bool> RemovePolicyAsync(CancellationToken cancellationToken, params string[] parameters)
         {
-            return RemovePolicyAsync(parameters.ToList());
+            return RemovePolicyAsync(parameters.ToList(), cancellationToken);
         }
 
         /// <summary>
@@ -379,10 +385,11 @@ namespace NetCasbin
         /// Removes an authorization rule from the current policy.
         /// </summary>
         /// <param name="parameters">The "p" policy rule, ptype "p" is implicitly used.</param>
+        /// <param name="cancellationToken">Instance of the cancellation token</param>
         /// <returns>Succeeds or not.</returns>
-        public Task<bool> RemovePolicyAsync(List<string> parameters)
+        public Task<bool> RemovePolicyAsync(List<string> parameters, CancellationToken cancellationToken)
         {
-            return RemoveNamedPolicyAsync(PermConstants.DefautPolicyType, parameters);
+            return RemoveNamedPolicyAsync(PermConstants.DefautPolicyType, parameters, cancellationToken);
         }
 
         /// <summary>
@@ -400,55 +407,58 @@ namespace NetCasbin
         /// Removes an authorization rule from the current policy, field filters can be specified.
         /// </summary>
         /// <param name="fieldIndex">The policy rule's start index to be matched.</param>
+        /// <param name="cancellationToken">Instance of the cancellation token</param>
         /// <param name="fieldValues">The field values to be matched, value "" means not to match this field.</param>
         /// <returns>Succeeds or not.</returns>
-        public Task<bool> RemoveFilteredPolicyAsync(int fieldIndex, params string[] fieldValues)
+        public Task<bool> RemoveFilteredPolicyAsync(int fieldIndex, CancellationToken cancellationToken, params string[] fieldValues)
         {
-            return RemoveFilteredNamedPolicyAsync(PermConstants.DefautPolicyType, fieldIndex, fieldValues);
+            return RemoveFilteredNamedPolicyAsync(PermConstants.DefautPolicyType, fieldIndex, cancellationToken, fieldValues);
         }
 
         /// <summary>
         /// Removes an authorization rule from the current named policy.
         /// </summary>
-        /// <param name="ptype">The policy type, can be "p", "p2", "p3", ..</param>
+        /// <param name="pType">The policy type, can be "p", "p2", "p3", ..</param>
         /// <param name="parameters">The "p" policy rule.</param>
         /// <returns>Succeeds or not.</returns>
-        public bool RemoveNamedPolicy(string ptype, params string[] parameters)
+        public bool RemoveNamedPolicy(string pType, params string[] parameters)
         {
-            return RemoveNamedPolicy(ptype, parameters.ToList());
+            return RemoveNamedPolicy(pType, parameters.ToList());
         }
 
         /// <summary>
         /// Removes an authorization rule from the current named policy.
         /// </summary>
-        /// <param name="ptype">The policy type, can be "p", "p2", "p3", ..</param>
+        /// <param name="pType">The policy type, can be "p", "p2", "p3", ..</param>
+        /// <param name="cancellationToken">Instance of the cancellation token</param>
         /// <param name="parameters">The "p" policy rule.</param>
         /// <returns>Succeeds or not.</returns>
-        public Task<bool> RemoveNamedPolicyAsync(string ptype, params string[] parameters)
+        public Task<bool> RemoveNamedPolicyAsync(string pType, CancellationToken cancellationToken, params string[] parameters)
         {
-            return RemoveNamedPolicyAsync(ptype, parameters.ToList());
+            return RemoveNamedPolicyAsync(pType, parameters.ToList(), cancellationToken);
         }
 
         /// <summary>
         /// Removes an authorization rule from the current named policy.
         /// </summary>
-        /// <param name="ptype">The policy type, can be "p", "p2", "p3", ..</param>
+        /// <param name="pType">The policy type, can be "p", "p2", "p3", ..</param>
         /// <param name="parameters">The "p" policy rule.</param>
         /// <returns>Succeeds or not.</returns>
-        public bool RemoveNamedPolicy(string ptype, List<string> parameters)
+        public bool RemoveNamedPolicy(string pType, List<string> parameters)
         {
-            return RemovePolicy(PermConstants.Section.PolicySection, ptype, parameters);
+            return RemovePolicy(PermConstants.Section.PolicySection, pType, parameters);
         }
 
         /// <summary>
         /// Removes an authorization rule from the current named policy.
         /// </summary>
-        /// <param name="ptype">The policy type, can be "p", "p2", "p3", ..</param>
+        /// <param name="pType">The policy type, can be "p", "p2", "p3", ..</param>
         /// <param name="parameters">The "p" policy rule.</param>
+        /// <param name="cancellationToken">Instance of the cancellation token</param>
         /// <returns>Succeeds or not.</returns>
-        public Task<bool> RemoveNamedPolicyAsync(string ptype, List<string> parameters)
+        public Task<bool> RemoveNamedPolicyAsync(string pType, List<string> parameters, CancellationToken cancellationToken)
         {
-            return RemovePolicyAsync(PermConstants.Section.PolicySection, ptype, parameters);
+            return RemovePolicyAsync(PermConstants.Section.PolicySection, pType, parameters, cancellationToken);
         }
 
         /// <summary>
@@ -468,11 +478,12 @@ namespace NetCasbin
         /// </summary>
         /// <param name="ptype">The policy type, can be "p", "p2", "p3", ..</param>
         /// <param name="fieldIndex">The policy rule's start index to be matched.</param>
+        /// <param name="cancellationToken">Instance of the cancellation token</param>
         /// <param name="fieldValues">The field values to be matched, value "" means not to  match this field.</param>
         /// <returns>Succeeds or not.</returns>
-        public Task<bool> RemoveFilteredNamedPolicyAsync(string ptype, int fieldIndex, params string[] fieldValues)
+        public Task<bool> RemoveFilteredNamedPolicyAsync(string ptype, int fieldIndex, CancellationToken cancellationToken, params string[] fieldValues)
         {
-            return RemoveFilteredPolicyAsync(PermConstants.Section.PolicySection, ptype, fieldIndex, fieldValues);
+            return RemoveFilteredPolicyAsync(PermConstants.Section.PolicySection, ptype, fieldIndex, cancellationToken, fieldValues);
         }
 
         /// <summary>
@@ -536,11 +547,12 @@ namespace NetCasbin
         /// rule already exists, the function returns false and the rule will not be
         /// Added.Otherwise the function returns true by adding the new rule.
         /// </summary>
+        /// <param name="cancellationToken">Instance of the cancellation toke</param>
         /// <param name="parameters">The "g" policy rule, ptype "g" is implicitly used.</param>
         /// <returns>Succeeds or not.</returns>
-        public Task<bool> AddGroupingPolicyAsync(params string[] parameters)
+        public Task<bool> AddGroupingPolicyAsync(CancellationToken cancellationToken, params string[] parameters)
         {
-            return AddGroupingPolicyAsync(parameters.ToList());
+            return AddGroupingPolicyAsync(parameters.ToList(), cancellationToken);
         }
 
         /// <summary>
@@ -561,10 +573,11 @@ namespace NetCasbin
         /// Added.Otherwise the function returns true by adding the new rule.
         /// </summary>
         /// <param name="parameters">The "g" policy rule, ptype "g" is implicitly used.</param>
+        /// <param name="cancellationToken">Instance of the cancellation token</param>
         /// <returns>Succeeds or not.</returns>
-        public Task<bool> AddGroupingPolicyAsync(List<string> parameters)
+        public Task<bool> AddGroupingPolicyAsync(List<string> parameters, CancellationToken cancellationToken)
         {
-            return AddNamedGroupingPolicyAsync(PermConstants.DefaultGroupingPolicyType, parameters);
+            return AddNamedGroupingPolicyAsync(PermConstants.DefaultGroupingPolicyType, parameters, cancellationToken);
         }
 
         /// <summary>
@@ -592,12 +605,13 @@ namespace NetCasbin
         /// policy. If the rule already exists, the function returns false and the rule
         /// will not be added. Otherwise the function returns true by adding the new rule.
         /// </summary>
-        /// <param name="ptype">The policy type, can be "g", "g2", "g3", ..</param>
+        /// <param name="pType">The policy type, can be "g", "g2", "g3", ..</param>
         /// <param name="parameters">The "g" policy rule.</param>
+        /// <param name="cancellationToken">Instance of the cancellation token</param>
         /// <returns>Succeeds or not.</returns>
-        public async Task<bool> AddNamedGroupingPolicyAsync(string ptype, List<string> parameters)
+        public async Task<bool> AddNamedGroupingPolicyAsync(string pType, List<string> parameters, CancellationToken cancellationToken)
         {
-            var ruleAdded = await AddPolicyAsync(PermConstants.Section.RoleSection, ptype, parameters);
+            var ruleAdded = await AddPolicyAsync(PermConstants.Section.RoleSection, pType, parameters, cancellationToken);
 
             if (autoBuildRoleLinks)
             {
@@ -633,11 +647,12 @@ namespace NetCasbin
         /// <summary>
         /// Removes a role inheritance rule from the current policy.
         /// </summary>
+        /// <param name="cancellationToken">Instance of the cancellation token</param>
         /// <param name="parameters">The "g" policy rule, ptype "g" is implicitly used.</param>
         /// <returns>Succeeds or not.</returns>
-        public Task<bool> RemoveGroupingPolicyAsync(params string[] parameters)
+        public Task<bool> RemoveGroupingPolicyAsync(CancellationToken cancellationToken, params string[] parameters)
         {
-            return RemoveGroupingPolicyAsync(parameters.ToList());
+            return RemoveGroupingPolicyAsync(parameters.ToList(), cancellationToken);
         }
 
         /// <summary>
@@ -654,46 +669,48 @@ namespace NetCasbin
         /// Removes a role inheritance rule from the current policy.
         /// </summary>
         /// <param name="parameters">The "g" policy rule, ptype "g" is implicitly used.</param>
+        /// <param name="cancellationToken">Instance of the cancellation token</param>
         /// <returns>Succeeds or not.</returns>
-        public Task<bool> RemoveGroupingPolicyAsync(List<string> parameters)
+        public Task<bool> RemoveGroupingPolicyAsync(List<string> parameters, CancellationToken cancellationToken)
         {
-            return RemoveNamedGroupingPolicyAsync(PermConstants.DefaultGroupingPolicyType, parameters);
+            return RemoveNamedGroupingPolicyAsync(PermConstants.DefaultGroupingPolicyType, parameters, cancellationToken);
         }
 
         /// <summary>
         /// Removes a role inheritance rule from the current 
         /// policy, field filters can be specified.
         /// </summary>
-        /// <param name="ptype">The policy type, can be "g", "g2", "g3", ..</param>
+        /// <param name="pType">The policy type, can be "g", "g2", "g3", ..</param>
         /// <param name="parameters">The "g" policy rule, ptype "g" is implicitly used.</param>
         /// <returns>Succeeds or not.</returns>
-        public bool RemoveNamedGroupingPolicy(string ptype, params string[] parameters)
+        public bool RemoveNamedGroupingPolicy(string pType, params string[] parameters)
         {
-            return RemoveNamedGroupingPolicy(ptype, parameters.ToList());
+            return RemoveNamedGroupingPolicy(pType, parameters.ToList());
         }
 
         /// <summary>
         /// Removes a role inheritance rule from the current 
         /// policy, field filters can be specified.
         /// </summary>
-        /// <param name="ptype">The policy type, can be "g", "g2", "g3", ..</param>
+        /// <param name="pType">The policy type, can be "g", "g2", "g3", ..</param>
+        /// <param name="cancellationToken">Instance of the cancellation toke</param>
         /// <param name="parameters">The "g" policy rule, ptype "g" is implicitly used.</param>
         /// <returns>Succeeds or not.</returns>
-        public Task<bool> RemoveNamedGroupingPolicyAsync(string ptype, params string[] parameters)
+        public Task<bool> RemoveNamedGroupingPolicyAsync(string pType, CancellationToken cancellationToken, params string[] parameters)
         {
-            return RemoveNamedGroupingPolicyAsync(ptype, parameters.ToList());
+            return RemoveNamedGroupingPolicyAsync(pType, parameters.ToList(), cancellationToken);
         }
 
                 /// <summary>
         /// Removes a role inheritance rule from the current 
         /// policy, field filters can be specified.
         /// </summary>
-        /// <param name="ptype">The policy type, can be "g", "g2", "g3", ..</param>
+        /// <param name="pType">The policy type, can be "g", "g2", "g3", ..</param>
         /// <param name="parameters">The "g" policy rule, ptype "g" is implicitly used.</param>
         /// <returns>Succeeds or not.</returns>
-        public bool RemoveNamedGroupingPolicy(string ptype, List<string> parameters)
+        public bool RemoveNamedGroupingPolicy(string pType, List<string> parameters)
         {
-            var ruleRemoved = RemovePolicy(PermConstants.Section.RoleSection, ptype, parameters);
+            var ruleRemoved = RemovePolicy(PermConstants.Section.RoleSection, pType, parameters);
 
             if (autoBuildRoleLinks)
             {
@@ -703,16 +720,17 @@ namespace NetCasbin
             return ruleRemoved;
         }
 
-        /// <summary>
-        /// Removes a role inheritance rule from the current 
-        /// policy, field filters can be specified.
-        /// </summary>
-        /// <param name="ptype">The policy type, can be "g", "g2", "g3", ..</param>
-        /// <param name="parameters">The "g" policy rule, ptype "g" is implicitly used.</param>
-        /// <returns>Succeeds or not.</returns>
-        public async Task<bool> RemoveNamedGroupingPolicyAsync(string ptype, List<string> parameters)
+                /// <summary>
+                /// Removes a role inheritance rule from the current 
+                /// policy, field filters can be specified.
+                /// </summary>
+                /// <param name="pType">The policy type, can be "g", "g2", "g3", ..</param>
+                /// <param name="parameters">The "g" policy rule, pType "g" is implicitly used.</param>
+                /// <param name="cancellationToken">Instance of the cancellation token</param>
+                /// <returns>Succeeds or not.</returns>
+                public async Task<bool> RemoveNamedGroupingPolicyAsync(string pType, List<string> parameters, CancellationToken cancellationToken)
         {
-            var ruleRemoved = await RemovePolicyAsync(PermConstants.Section.RoleSection, ptype, parameters);
+            var ruleRemoved = await RemovePolicyAsync(PermConstants.Section.RoleSection, pType, parameters, cancellationToken);
 
             if (autoBuildRoleLinks)
             {
@@ -739,23 +757,24 @@ namespace NetCasbin
         /// policy, field filters can be specified.
         /// </summary>
         /// <param name="fieldIndex">The policy rule's start index to be matched.</param>
+        /// <param name="cancellationToken">Instance of the cancellation token</param>
         /// <param name="fieldValues">The field values to be matched, value "" means not to match this field.</param>
         /// <returns>Succeeds or not.</returns>
-        public Task<bool> RemoveFilteredGroupingPolicyAsync(int fieldIndex, params string[] fieldValues)
+        public Task<bool> RemoveFilteredGroupingPolicyAsync(int fieldIndex, CancellationToken cancellationToken, params string[] fieldValues)
         {
-            return RemoveFilteredNamedGroupingPolicyAsync(PermConstants.DefaultGroupingPolicyType, fieldIndex, fieldValues);
+            return RemoveFilteredNamedGroupingPolicyAsync(PermConstants.DefaultGroupingPolicyType, fieldIndex, cancellationToken, fieldValues);
         }
 
         /// <summary>
         /// Removes a role inheritance rule from the current named policy, field filters can be specified.
         /// </summary>
-        /// <param name="ptype">The policy type, can be "g", "g2", "g3", ..</param>
+        /// <param name="pType">The policy type, can be "g", "g2", "g3", ..</param>
         /// <param name="fieldIndex">The policy rule's start index to be matched.</param>
         /// <param name="fieldValues">The field values to be matched, value "" means not to match this field.</param>
         /// <returns>Succeeds or not.</returns>
-        public bool RemoveFilteredNamedGroupingPolicy(string ptype, int fieldIndex, params string[] fieldValues)
+        public bool RemoveFilteredNamedGroupingPolicy(string pType, int fieldIndex, params string[] fieldValues)
         {
-            var ruleRemoved = RemoveFilteredPolicy(PermConstants.Section.RoleSection, ptype, fieldIndex, fieldValues);
+            var ruleRemoved = RemoveFilteredPolicy(PermConstants.Section.RoleSection, pType, fieldIndex, fieldValues);
 
             if (autoBuildRoleLinks)
             {
@@ -768,13 +787,14 @@ namespace NetCasbin
         /// <summary>
         /// Removes a role inheritance rule from the current named policy, field filters can be specified.
         /// </summary>
-        /// <param name="ptype">The policy type, can be "g", "g2", "g3", ..</param>
+        /// <param name="pType">The policy type, can be "g", "g2", "g3", ..</param>
         /// <param name="fieldIndex">The policy rule's start index to be matched.</param>
+        /// <param name="cancellationToken"></param>
         /// <param name="fieldValues">The field values to be matched, value "" means not to match this field.</param>
         /// <returns>Succeeds or not.</returns>
-        public async Task<bool> RemoveFilteredNamedGroupingPolicyAsync(string ptype, int fieldIndex, params string[] fieldValues)
+        public async Task<bool> RemoveFilteredNamedGroupingPolicyAsync(string pType, int fieldIndex, CancellationToken cancellationToken, params string[] fieldValues)
         {
-            var ruleRemoved = await RemoveFilteredPolicyAsync(PermConstants.Section.RoleSection, ptype, fieldIndex, fieldValues);
+            var ruleRemoved = await RemoveFilteredPolicyAsync(PermConstants.Section.RoleSection, pType, fieldIndex, cancellationToken, fieldValues);
 
             if (autoBuildRoleLinks)
             {
