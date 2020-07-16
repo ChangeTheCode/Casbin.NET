@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using NetCasbin.Persist;
@@ -106,7 +107,7 @@ namespace NetCasbin.UnitTest
             TestEnforce(e, "cathy", "/cathy_data", "DELETE", false);
 
             e = new Enforcer(m);
-            await a.LoadPolicyAsync(e.GetModel());
+            await a.LoadPolicyAsync(e.GetModel(), CancellationToken.None);
 
             TestEnforce(e, "alice", "/alice_data/resource1", "GET", true);
             TestEnforce(e, "alice", "/alice_data/resource1", "POST", true);
@@ -176,7 +177,7 @@ namespace NetCasbin.UnitTest
 
             var e = new Enforcer(m);
 
-            await e.AddPermissionForUserAsync("alice", "data1", "invalid");
+            await e.AddPermissionForUserAsync("alice", CancellationToken.None, "data1", "invalid");
 
             TestEnforce(e, "alice", "data1", "read", false);
         }
@@ -221,11 +222,11 @@ namespace NetCasbin.UnitTest
 
             var e = new Enforcer(m);
 
-            await e.AddPermissionForUserAsync("alice", "data1", "read");
-            await e.AddPermissionForUserAsync("bob", "data2", "write");
-            await e.AddPermissionForUserAsync("data2_admin", "data2", "read");
-            await e.AddPermissionForUserAsync("data2_admin", "data2", "write");
-            await e.AddRoleForUserAsync("alice", "data2_admin");
+            await e.AddPermissionForUserAsync("alice", CancellationToken.None, "data1", "read");
+            await e.AddPermissionForUserAsync("bob", CancellationToken.None, "data2", "write");
+            await e.AddPermissionForUserAsync("data2_admin", CancellationToken.None, "data2", "read");
+            await e.AddPermissionForUserAsync("data2_admin", CancellationToken.None, "data2", "write");
+            await e.AddRoleForUserAsync("alice", "data2_admin", CancellationToken.None);
 
             TestEnforce(e, "alice", "data1", "read", true);
             TestEnforce(e, "alice", "data1", "write", false);
@@ -299,11 +300,11 @@ namespace NetCasbin.UnitTest
 
             var e = new Enforcer(m);
 
-            await e.AddPermissionForUserAsync("alice", "data1", "read");
-            await e.AddPermissionForUserAsync("bob", "data2", "write");
-            await e.AddPermissionForUserAsync("data2_admin", "data2", "read");
-            await e.AddPermissionForUserAsync("data2_admin", "data2", "write");
-            await e.AddRoleForUserAsync("alice", "data2_admin");
+            await e.AddPermissionForUserAsync("alice", CancellationToken.None, "data1", "read");
+            await e.AddPermissionForUserAsync("bob", CancellationToken.None, "data2", "write");
+            await e.AddPermissionForUserAsync("data2_admin", CancellationToken.None, "data2", "read");
+            await e.AddPermissionForUserAsync("data2_admin", CancellationToken.None, "data2", "write");
+            await e.AddRoleForUserAsync("alice", "data2_admin", CancellationToken.None);
 
             TestEnforce(e, "alice", "data1", "read", true);
             TestEnforce(e, "alice", "data1", "write", false);
@@ -352,8 +353,8 @@ namespace NetCasbin.UnitTest
 
             var e = new Enforcer(m);
 
-            await e.AddPermissionForUserAsync("alice", "data1", "read");
-            await e.AddPermissionForUserAsync("bob", "data2", "write");
+            await e.AddPermissionForUserAsync("alice", CancellationToken.None, "data1", "read");
+            await e.AddPermissionForUserAsync("bob", CancellationToken.None, "data2", "write");
 
             TestEnforce(e, "alice", "data1", "read", true);
             TestEnforce(e, "alice", "data1", "write", false);
@@ -379,7 +380,7 @@ namespace NetCasbin.UnitTest
         {
             var e = new Enforcer("examples/rbac_model.conf", "examples/rbac_policy.csv");
 
-            await e.LoadPolicyAsync();
+            await e.LoadPolicyAsync(CancellationToken.None);
             TestGetPolicy(e, AsList(AsList("alice", "data1", "read"), AsList("bob", "data2", "write"), AsList("data2_admin", "data2", "read"), AsList("data2_admin", "data2", "write")));
         }
 
@@ -396,7 +397,7 @@ namespace NetCasbin.UnitTest
         {
             var e = new Enforcer("examples/rbac_model.conf", "examples/rbac_policy.csv");
 
-            await e.SavePolicyAsync();
+            await e.SavePolicyAsync(CancellationToken.None);
         }
 
         [Fact]
@@ -412,7 +413,7 @@ namespace NetCasbin.UnitTest
         {
             var e = new Enforcer("examples/basic_model.conf", "examples/basic_policy.csv");
 
-            await e.SavePolicyAsync();
+            await e.SavePolicyAsync(CancellationToken.None);
         }
 
         [Fact]
@@ -522,9 +523,9 @@ namespace NetCasbin.UnitTest
             e.EnableAutoSave(false);
             // Because AutoSave is disabled, the policy change only affects the policy in Casbin enforcer,
             // it doesn't affect the policy in the storage.
-            await e.RemovePolicyAsync("alice", "data1", "read");
+            await e.RemovePolicyAsync(CancellationToken.None, "alice",  "data1", "read");
             // Reload the policy from the storage to see the effect.
-            await e.LoadPolicyAsync();
+            await e.LoadPolicyAsync(CancellationToken.None);
             TestEnforce(e, "alice", "data1", "read", true);
             TestEnforce(e, "alice", "data1", "write", false);
             TestEnforce(e, "alice", "data2", "read", false);
@@ -537,12 +538,12 @@ namespace NetCasbin.UnitTest
             e.EnableAutoSave(true);
             // Because AutoSave is enabled, the policy change not only affects the policy in Casbin enforcer,
             // but also affects the policy in the storage.
-            await e.RemovePolicyAsync("alice", "data1", "read");
+            await e.RemovePolicyAsync(CancellationToken.None, "alice", "data1", "read");
 
             // However, the file adapter doesn't implement the AutoSave feature, so enabling it has no effect at all here.
 
             // Reload the policy from the storage to see the effect.
-            await e.LoadPolicyAsync();
+            await e.LoadPolicyAsync(CancellationToken.None);
             TestEnforce(e, "alice", "data1", "read", true); // Will not be false here.
             TestEnforce(e, "alice", "data1", "write", false);
             TestEnforce(e, "alice", "data2", "read", false);
@@ -619,7 +620,7 @@ namespace NetCasbin.UnitTest
 
             var a2 = e2.GetAdapter();
             e.SetAdapter(a2);
-            await e.LoadPolicyAsync();
+            await e.LoadPolicyAsync(CancellationToken.None);
 
             TestEnforce(e, "alice", "data1", "read", false);
             TestEnforce(e, "alice", "data1", "write", true);
@@ -648,7 +649,7 @@ namespace NetCasbin.UnitTest
 
             IAdapter a = new DefaultFileAdapter("examples/basic_policy.csv");
             e.SetAdapter(a);
-            await e.LoadPolicyAsync();
+            await e.LoadPolicyAsync(CancellationToken.None);
 
             TestEnforce(e, "alice", "data1", "read", true);
         }
@@ -688,7 +689,7 @@ namespace NetCasbin.UnitTest
 
             e.SetModel(m);
             e.SetAdapter(a);
-            await e.LoadPolicyAsync();
+            await e.LoadPolicyAsync(CancellationToken.None);
 
             TestEnforce(e, "alice", "/alice_data/resource1", "GET", true);
         }
@@ -731,7 +732,7 @@ namespace NetCasbin.UnitTest
                 IAdapter a = new DefaultFileAdapter(fs);
                 e.SetModel(m);
                 e.SetAdapter(a);
-                await e.LoadPolicyAsync();
+                await e.LoadPolicyAsync(CancellationToken.None);
 
                 TestEnforce(e, "alice", "/alice_data/resource1", "GET", true);
             }

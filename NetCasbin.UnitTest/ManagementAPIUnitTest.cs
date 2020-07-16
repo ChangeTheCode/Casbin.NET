@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using NetCasbin.UnitTest.Fixtures;
@@ -102,22 +103,22 @@ namespace NetCasbin.UnitTest
                 AsList("data2_admin", "data2", "read"),
                 AsList("data2_admin", "data2", "write")));
 
-            await e.RemovePolicyAsync("alice", "data1", "read");
-            await e.RemovePolicyAsync("bob", "data2", "write");
-            await e.RemovePolicyAsync("alice", "data1", "read");
-            await e.AddPolicyAsync("eve", "data3", "read");
-            await e.AddPolicyAsync("eve", "data3", "read");
+            await e.RemovePolicyAsync(CancellationToken.None, "alice", "data1", "read");
+            await e.RemovePolicyAsync(CancellationToken.None, "bob", "data2", "write");
+            await e.RemovePolicyAsync(CancellationToken.None, "alice", "data1", "read");
+            await e.AddPolicyAsync(CancellationToken.None, "eve", "data3", "read");
+            await e.AddPolicyAsync(CancellationToken.None, "eve", "data3", "read");
 
             var namedPolicy = AsList("eve", "data3", "read");
-            await e.RemoveNamedPolicyAsync("p", namedPolicy);
-            await e.AddNamedPolicyAsync("p", namedPolicy);
+            await e.RemoveNamedPolicyAsync("p", namedPolicy, CancellationToken.None);
+            await e.AddNamedPolicyAsync("p", namedPolicy, CancellationToken.None);
 
             TestGetPolicy(e, AsList(
                 AsList("data2_admin", "data2", "read"),
                 AsList("data2_admin", "data2", "write"),
                 AsList("eve", "data3", "read")));
 
-            await e.RemoveFilteredPolicyAsync(1, "data2");
+            await e.RemoveFilteredPolicyAsync(1, CancellationToken.None, "data2");
 
             TestGetPolicy(e, AsList(AsList("eve", "data3", "read")));
         }
@@ -175,15 +176,15 @@ namespace NetCasbin.UnitTest
             TestGetRoles(e, "eve", AsList());
             TestGetRoles(e, "non_exist", AsList());
 
-            await e.RemoveGroupingPolicyAsync("alice", "data2_admin");
-            await e.AddGroupingPolicyAsync("bob", "data1_admin");
-            await e.AddGroupingPolicyAsync("eve", "data3_admin");
+            await e.RemoveGroupingPolicyAsync(CancellationToken.None, "alice", "data2_admin");
+            await e.AddGroupingPolicyAsync(CancellationToken.None, "bob", "data1_admin");
+            await e.AddGroupingPolicyAsync(CancellationToken.None, "eve", "data3_admin");
 
             var namedGroupingPolicy = AsList("alice", "data2_admin");
             TestGetRoles(e, "alice", AsList());
-            await e.AddNamedGroupingPolicyAsync("g", namedGroupingPolicy);
+            await e.AddNamedGroupingPolicyAsync("g", namedGroupingPolicy, CancellationToken.None);
             TestGetRoles(e, "alice", AsList("data2_admin"));
-            await e.RemoveNamedGroupingPolicyAsync("g", namedGroupingPolicy);
+            await e.RemoveNamedGroupingPolicyAsync("g", namedGroupingPolicy, CancellationToken.None);
 
             TestGetRoles(e, "alice", AsList());
             TestGetRoles(e, "bob", AsList("data1_admin"));
@@ -194,7 +195,7 @@ namespace NetCasbin.UnitTest
             TestGetUsers(e, "data2_admin", AsList());
             TestGetUsers(e, "data3_admin", AsList("eve"));
 
-            await e.RemoveFilteredGroupingPolicyAsync(0, "bob");
+            await e.RemoveFilteredGroupingPolicyAsync(0, CancellationToken.None, "bob");
 
             TestGetRoles(e, "alice", AsList());
             TestGetRoles(e, "bob", AsList());

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 using NetCasbin.UnitTest.Fixtures;
 using static NetCasbin.UnitTest.Util.TestUtil;
@@ -60,8 +61,8 @@ namespace NetCasbin.UnitTest
             TestGetRolesInDomain(e, "admin", "domain2", AsList());
             TestGetRolesInDomain(e, "non_exist", "domain2", AsList());
 
-            await e.DeleteRoleForUserInDomainAsync("alice", "admin", "domain1");
-            await e.AddRoleForUserInDomainAsync("bob", "admin", "domain1");
+            await e.DeleteRoleForUserInDomainAsync("alice", "admin", "domain1", CancellationToken.None);
+            await e.AddRoleForUserInDomainAsync("bob", "admin", "domain1", CancellationToken.None);
 
             TestGetRolesInDomain(e, "alice", "domain1", AsList());
             TestGetRolesInDomain(e, "bob", "domain1", AsList("admin"));

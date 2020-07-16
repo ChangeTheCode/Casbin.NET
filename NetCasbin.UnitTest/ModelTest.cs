@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using NetCasbin.Rbac;
@@ -210,13 +211,13 @@ namespace NetCasbin.UnitTest
             var e = new Enforcer(_testModelFixture.GetNewTestModel(_testModelFixture._rbacWithDomainsModelText));
             e.BuildRoleLinks();
 
-            await e.AddPolicyAsync("admin", "domain1", "data1", "read");
-            await e.AddPolicyAsync("admin", "domain1", "data1", "write");
-            await e.AddPolicyAsync("admin", "domain2", "data2", "read");
-            await e.AddPolicyAsync("admin", "domain2", "data2", "write");
+            await e.AddPolicyAsync(CancellationToken.None, "admin", "domain1", "data1", "read");
+            await e.AddPolicyAsync(CancellationToken.None, "admin", "domain1", "data1", "write");
+            await e.AddPolicyAsync(CancellationToken.None, "admin", "domain2", "data2", "read");
+            await e.AddPolicyAsync(CancellationToken.None, "admin", "domain2", "data2", "write");
 
-            await e.AddGroupingPolicyAsync("alice", "admin", "domain1");
-            await e.AddGroupingPolicyAsync("bob", "admin", "domain2");
+            await e.AddGroupingPolicyAsync(CancellationToken.None, "alice", "admin", "domain1");
+            await e.AddGroupingPolicyAsync(CancellationToken.None, "bob", "admin", "domain2");
 
             TestDomainEnforce(e, "alice", "domain1", "data1", "read", true);
             TestDomainEnforce(e, "alice", "domain1", "data1", "write", true);
@@ -228,7 +229,7 @@ namespace NetCasbin.UnitTest
             TestDomainEnforce(e, "bob", "domain2", "data2", "write", true);
 
             // Remove all policy rules related to domain1 and data1.
-            await e.RemoveFilteredPolicyAsync(1, "domain1", "data1");
+            await e.RemoveFilteredPolicyAsync(1, CancellationToken.None, "domain1", "data1");
 
             TestDomainEnforce(e, "alice", "domain1", "data1", "read", false);
             TestDomainEnforce(e, "alice", "domain1", "data1", "write", false);
@@ -240,7 +241,7 @@ namespace NetCasbin.UnitTest
             TestDomainEnforce(e, "bob", "domain2", "data2", "write", true);
 
             // Remove the specified policy rule.
-            await e.RemovePolicyAsync("admin", "domain2", "data2", "read");
+            await e.RemovePolicyAsync(CancellationToken.None, "admin", "domain2", "data2", "read");
 
             TestDomainEnforce(e, "alice", "domain1", "data1", "read", false);
             TestDomainEnforce(e, "alice", "domain1", "data1", "write", false);
@@ -323,7 +324,7 @@ namespace NetCasbin.UnitTest
             // You can add custom data to a grouping policy, Casbin will ignore it. It is only meaningful to the caller.
             // This feature can be used to store information like whether "bob" is an end user (so no subject will inherit "bob")
             // For Casbin, it is equivalent to: e.addGroupingPolicy("bob", "data2_admin")
-            await e.AddGroupingPolicyAsync("bob", "data2_admin", "custom_data");
+            await e.AddGroupingPolicyAsync(CancellationToken.None, "bob", "data2_admin", "custom_data");
 
             TestEnforce(e, "alice", "data1", "read", true);
             TestEnforce(e, "alice", "data1", "write", false);
@@ -337,7 +338,7 @@ namespace NetCasbin.UnitTest
             // You should also take the custom data as a parameter when deleting a grouping policy.
             // e.removeGroupingPolicy("bob", "data2_admin") won't work.
             // Or you can remove it by using removeFilteredGroupingPolicy().
-            await e.RemoveGroupingPolicyAsync("bob", "data2_admin", "custom_data");
+            await e.RemoveGroupingPolicyAsync(CancellationToken.None, "bob", "data2_admin", "custom_data");
 
             TestEnforce(e, "alice", "data1", "read", true);
             TestEnforce(e, "alice", "data1", "write", false);

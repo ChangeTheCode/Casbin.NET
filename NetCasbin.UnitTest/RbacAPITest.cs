@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 using NetCasbin.UnitTest.Fixtures;
 using static NetCasbin.UnitTest.Util.TestUtil;
@@ -92,32 +93,32 @@ namespace NetCasbin.UnitTest
             TestHasRole(e, "alice", "data1_admin", false);
             TestHasRole(e, "alice", "data2_admin", true);
 
-            await e.AddRoleForUserAsync("alice", "data1_admin");
+            await e.AddRoleForUserAsync("alice", "data1_admin", CancellationToken.None);
 
             TestGetRoles(e, "alice", AsList("data1_admin", "data2_admin"));
             TestGetRoles(e, "bob", AsList());
             TestGetRoles(e, "data2_admin", AsList());
 
-            await e.DeleteRoleForUserAsync("alice", "data1_admin");
+            await e.DeleteRoleForUserAsync("alice", "data1_admin", CancellationToken.None);
 
             TestGetRoles(e, "alice", AsList("data2_admin"));
             TestGetRoles(e, "bob", AsList());
             TestGetRoles(e, "data2_admin", AsList());
 
-            await e.DeleteRolesForUserAsync("alice");
+            await e.DeleteRolesForUserAsync("alice", CancellationToken.None);
 
             TestGetRoles(e, "alice", AsList());
             TestGetRoles(e, "bob", AsList());
             TestGetRoles(e, "data2_admin", AsList());
 
-            await e.AddRoleForUserAsync("alice", "data1_admin");
-            await e.DeleteUserAsync("alice");
+            await e.AddRoleForUserAsync("alice", "data1_admin", CancellationToken.None);
+            await e.DeleteUserAsync("alice", CancellationToken.None);
 
             TestGetRoles(e, "alice", AsList());
             TestGetRoles(e, "bob", AsList());
             TestGetRoles(e, "data2_admin", AsList());
 
-            await e.AddRoleForUserAsync("alice", "data2_admin");
+            await e.AddRoleForUserAsync("alice", "data2_admin", CancellationToken.None);
 
             TestEnforce(e, "alice", "data1", "read", true);
             TestEnforce(e, "alice", "data1", "write", false);
@@ -130,7 +131,7 @@ namespace NetCasbin.UnitTest
             TestEnforce(e, "bob", "data2", "read", false);
             TestEnforce(e, "bob", "data2", "write", true);
 
-            await e.DeleteRoleAsync("data2_admin");
+            await e.DeleteRoleAsync("data2_admin", CancellationToken.None);
 
             TestEnforce(e, "alice", "data1", "read", true);
             TestEnforce(e, "alice", "data1", "write", false);
