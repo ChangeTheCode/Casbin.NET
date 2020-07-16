@@ -8,6 +8,8 @@ namespace NetCasbin.Persist
     {
         void LoadFilteredPolicy(Model.Model model, Filter filter);
 
+        Task LoadFilteredPolicyAsync(Model.Model model, Filter filter);
+
         Task LoadFilteredPolicyAsync(Model.Model model, Filter filter, CancellationToken cancellationToken);
 
         bool IsFiltered { get; }

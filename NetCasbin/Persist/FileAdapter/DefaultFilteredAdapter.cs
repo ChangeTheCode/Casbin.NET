@@ -37,6 +37,11 @@ namespace NetCasbin.Persist.FileAdapter
             IsFiltered = true;
         }
 
+        public async Task LoadFilteredPolicyAsync(Model.Model model, Filter filter)
+        {
+            await LoadFilteredPolicyAsync(model, filter, CancellationToken.None);
+        }
+
         public async Task LoadFilteredPolicyAsync(Model.Model model, Filter filter, CancellationToken cancellationToken)
         {
             if (filter == null)

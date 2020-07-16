@@ -12,13 +12,13 @@ namespace NetCasbin.Persist.FileAdapter
 {
     public class DefaultFileAdapter : IAdapter
     {
-        protected readonly string filePath;
+        protected readonly string FilePath;
         private readonly bool _readOnly;
         private readonly StreamReader _byteArrayInputStream;
 
         public DefaultFileAdapter(string filePath)
         {
-            this.filePath = filePath;
+            this.FilePath = filePath;
         }
 
         public DefaultFileAdapter(Stream inputStream)
@@ -36,10 +36,10 @@ namespace NetCasbin.Persist.FileAdapter
 
         public void LoadPolicy(Model.Model model)
         {
-            if (!string.IsNullOrWhiteSpace(filePath))
+            if (!string.IsNullOrWhiteSpace(FilePath))
             {
                 using (var sr = new StreamReader(new FileStream(
-                    filePath, FileMode.Open, FileAccess.Read, FileShare.Read)))
+                    FilePath, FileMode.Open, FileAccess.Read, FileShare.Read)))
                 {
                     LoadPolicyData(model, Helper.LoadPolicyLine, sr);
                 }
@@ -51,12 +51,17 @@ namespace NetCasbin.Persist.FileAdapter
             }
         }
 
+        public async Task LoadPolicyAsync(Model.Model model)
+        {
+            await LoadPolicyAsync(model, CancellationToken.None);
+        }
+
         public async Task LoadPolicyAsync(Model.Model model, CancellationToken cancellationToken)
         {
-            if (!string.IsNullOrWhiteSpace(filePath))
+            if (!string.IsNullOrWhiteSpace(FilePath))
             {
                 using (var sr = new StreamReader(new FileStream(
-                    filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+                    FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                 {
                     await LoadPolicyDataAsync(model, Helper.LoadPolicyLine, sr);
                 }
@@ -75,7 +80,7 @@ namespace NetCasbin.Persist.FileAdapter
                 throw new Exception("Policy file can not write, because use inputStream is readOnly");
             }
 
-            if (string.IsNullOrWhiteSpace(filePath))
+            if (string.IsNullOrWhiteSpace(FilePath))
             {
                 throw new ArgumentException("Invalid file path, file path cannot be empty");
             }
@@ -91,7 +96,7 @@ namespace NetCasbin.Persist.FileAdapter
                 throw new Exception("Policy file can not write, because use inputStream is readOnly");
             }
 
-            if (string.IsNullOrWhiteSpace(filePath))
+            if (string.IsNullOrWhiteSpace(FilePath))
             {
                 throw new ArgumentException("Invalid file path, file path cannot be empty");
             }
@@ -101,6 +106,11 @@ namespace NetCasbin.Persist.FileAdapter
         }
 
         public void AddPolicy(string sec, string pType, IList<string> rule)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddPolicyAsync(string sec, string pType, IList<string> rule)
         {
             throw new NotImplementedException();
         }
@@ -115,12 +125,22 @@ namespace NetCasbin.Persist.FileAdapter
             throw new NotImplementedException();
         }
 
+        public Task RemovePolicyAsync(string sec, string pType, IList<string> rule)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task RemovePolicyAsync(string sec, string pType, IList<string> rule, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
         public void RemoveFilteredPolicy(string sec, string pType, int fieldIndex, params string[] fieldValues)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveFilteredPolicyAsync(string sec, string pType, int fieldIndex, params string[] fieldValues)
         {
             throw new NotImplementedException();
         }
@@ -173,7 +193,7 @@ namespace NetCasbin.Persist.FileAdapter
 
         private void SavePolicyFile(string text)
         {
-            File.WriteAllText(filePath, text, Encoding.UTF8);
+            File.WriteAllText(FilePath, text, Encoding.UTF8);
         }
 
         private async Task SavePolicyFileAsync(string text, CancellationToken cancellationToken)
@@ -181,7 +201,7 @@ namespace NetCasbin.Persist.FileAdapter
             text = text ?? string.Empty;
             var content = Encoding.UTF8.GetBytes(text);
             using (var fs = new FileStream(
-                   filePath, FileMode.Create, FileAccess.Write,
+                   FilePath, FileMode.Create, FileAccess.Write,
                    FileShare.None, bufferSize: 4096, useAsync: true))
             {
                 await fs.WriteAsync(content, 0, content.Length, cancellationToken);
