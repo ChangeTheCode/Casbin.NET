@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using NetCasbin.Model;
 using NetCasbin.Util;
@@ -50,7 +51,7 @@ namespace NetCasbin.Persist.FileAdapter
             }
         }
 
-        public async Task LoadPolicyAsync(Model.Model model)
+        public async Task LoadPolicyAsync(Model.Model model, CancellationToken cancellationToken)
         {
             if (!string.IsNullOrWhiteSpace(filePath))
             {
@@ -83,7 +84,7 @@ namespace NetCasbin.Persist.FileAdapter
             SavePolicyFile(string.Join("\n", policy));
         }
 
-        public async Task SavePolicyAsync(Model.Model model)
+        public async Task SavePolicyAsync(Model.Model model, CancellationToken cancellationToken)
         {
             if (_byteArrayInputStream != null && _readOnly)
             {
@@ -96,35 +97,35 @@ namespace NetCasbin.Persist.FileAdapter
             }
 
             var policy = ConvertToPolicyStrings(model);
-            await SavePolicyFileAsync(string.Join("\n", policy));
+            await SavePolicyFileAsync(string.Join("\n", policy), cancellationToken);
         }
 
-        public void AddPolicy(string sec, string ptype, IList<string> rule)
+        public void AddPolicy(string sec, string pType, IList<string> rule)
         {
             throw new NotImplementedException();
         }
 
-        public Task AddPolicyAsync(string sec, string ptype, IList<string> rule)
+        public Task AddPolicyAsync(string sec, string pType, IList<string> rule, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public void RemovePolicy(string sec, string ptype, IList<string> rule)
+        public void RemovePolicy(string sec, string pType, IList<string> rule)
         {
             throw new NotImplementedException();
         }
 
-        public Task RemovePolicyAsync(string sec, string ptype, IList<string> rule)
+        public Task RemovePolicyAsync(string sec, string pType, IList<string> rule, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public void RemoveFilteredPolicy(string sec, string ptype, int fieldIndex, params string[] fieldValues)
+        public void RemoveFilteredPolicy(string sec, string pType, int fieldIndex, params string[] fieldValues)
         {
             throw new NotImplementedException();
         }
 
-        public Task RemoveFilteredPolicyAsync(string sec, string ptype, int fieldIndex, params string[] fieldValues)
+        public Task RemoveFilteredPolicyAsync(string sec, string pType, int fieldIndex, CancellationToken cancellationToken, params string[] fieldValues)
         {
             throw new NotImplementedException();
         }
@@ -175,7 +176,7 @@ namespace NetCasbin.Persist.FileAdapter
             File.WriteAllText(filePath, text, Encoding.UTF8);
         }
 
-        private async Task SavePolicyFileAsync(string text)
+        private async Task SavePolicyFileAsync(string text, CancellationToken cancellationToken)
         {
             text = text ?? string.Empty;
             var content = Encoding.UTF8.GetBytes(text);
@@ -183,7 +184,7 @@ namespace NetCasbin.Persist.FileAdapter
                    filePath, FileMode.Create, FileAccess.Write,
                    FileShare.None, bufferSize: 4096, useAsync: true))
             {
-                await fs.WriteAsync(content, 0, content.Length);
+                await fs.WriteAsync(content, 0, content.Length, cancellationToken);
             }
         }
     }

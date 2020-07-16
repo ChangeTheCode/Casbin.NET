@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NetCasbin.Persist
@@ -7,7 +8,7 @@ namespace NetCasbin.Persist
     {
         void LoadFilteredPolicy(Model.Model model, Filter filter);
 
-        Task LoadFilteredPolicyAsync(Model.Model model, Filter filter);
+        Task LoadFilteredPolicyAsync(Model.Model model, Filter filter, CancellationToken cancellationToken);
 
         bool IsFiltered { get; }
     }

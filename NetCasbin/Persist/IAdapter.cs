@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NetCasbin.Persist
@@ -7,23 +7,23 @@ namespace NetCasbin.Persist
     public interface IAdapter
     {
         void LoadPolicy(Model.Model model);
-
-        Task LoadPolicyAsync(Model.Model model);
+        
+        Task LoadPolicyAsync(Model.Model model, CancellationToken cancellationToken);
 
         void SavePolicy(Model.Model model);
 
-        Task SavePolicyAsync(Model.Model model);
+        Task SavePolicyAsync(Model.Model model, CancellationToken cancellationToken);
 
-        void AddPolicy(string sec, string ptype, IList<string> rule);
+        void AddPolicy(string sec, string pType, IList<string> rule);
+        
+        Task AddPolicyAsync(string sec, string pType, IList<string> rule, CancellationToken cancellationToken);
 
-        Task AddPolicyAsync(string sec, string ptype, IList<string> rule);
+        void RemovePolicy(string sec, string pType, IList<string> rule);
 
-        void RemovePolicy(string sec, string ptype, IList<string> rule);
+        Task RemovePolicyAsync(string sec, string pType, IList<string> rule, CancellationToken cancellationToken);
 
-        Task RemovePolicyAsync(string sec, string ptype, IList<string> rule);
+        void RemoveFilteredPolicy(string sec, string pType, int fieldIndex, params string[] fieldValues);
 
-        void RemoveFilteredPolicy(string sec, string ptype, int fieldIndex, params string[] fieldValues);
-
-        Task RemoveFilteredPolicyAsync(string sec, string ptype, int fieldIndex, params string[] fieldValues);
+        Task RemoveFilteredPolicyAsync(string sec, string pType, int fieldIndex, CancellationToken cancellationToken, params string[] fieldValues);
     }
 }
